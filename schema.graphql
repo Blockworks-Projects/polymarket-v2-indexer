@@ -1,0 +1,136 @@
+# ═══════════════════════════════════════════════════════════════════════
+#  Polymarket V2 Indexer — Schema
+# ═══════════════════════════════════════════════════════════════════════
+
+# ── Trading ─────────────────────────────────────────────────────────
+
+type OrderFill {
+  id: ID!                              # txHash-logIndex
+  orderHash: String!
+  maker: String!
+  taker: String!
+  side: Int!                           # 0=BUY, 1=SELL
+  tokenId: BigInt!                     # conditional token ID
+  makerAmountFilled: BigInt!
+  takerAmountFilled: BigInt!
+  fee: BigInt!
+  builder: String!                     # builder code (bytes32)
+  metadata: String!                    # metadata (bytes32)
+  exchange: String!                    # source exchange address
+  timestamp: Int!
+  blockNumber: Int!
+  transactionHash: String!
+  txFrom: String!                      # transaction sender
+}
+
+type OrderMatch {
+  id: ID!                              # txHash-logIndex
+  takerOrderHash: String!
+  takerOrderMaker: String!
+  side: Int!                           # 0=BUY, 1=SELL
+  tokenId: BigInt!
+  makerAmountFilled: BigInt!
+  takerAmountFilled: BigInt!
+  exchange: String!
+  timestamp: Int!
+  blockNumber: Int!
+  transactionHash: String!
+}
+
+type FeeEvent {
+  id: ID!
+  receiver: String!
+  amount: BigInt!
+  timestamp: Int!
+  blockNumber: Int!
+  transactionHash: String!
+}
+
+# ── PolyUSD ─────────────────────────────────────────────────────────
+
+type PolyUSDTransfer {
+  id: ID!
+  from: String!
+  to: String!
+  amount: BigInt!
+  timestamp: Int!
+  blockNumber: Int!
+  transactionHash: String!
+}
+
+type PolyUSDWrap {
+  id: ID!
+  eventType: String!                   # "wrap" | "unwrap"
+  caller: String!
+  asset: String!                       # underlying asset (USDC or USDC.e)
+  to: String!
+  amount: BigInt!
+  timestamp: Int!
+  blockNumber: Int!
+  transactionHash: String!
+}
+
+type PolyUSDAccount {
+  id: ID!                              # address
+  balance: BigInt!
+  totalWrapped: BigInt!
+  totalUnwrapped: BigInt!
+}
+
+# ── Rewards ─────────────────────────────────────────────────────────
+
+type RewardDistribution {
+  id: ID!
+  user: String!
+  amount: BigInt!
+  timestamp: Int!
+  blockNumber: Int!
+  transactionHash: String!
+}
+
+type SponsoredMarket {
+  id: ID!                              # marketId (bytes32)
+  startTime: Int!
+  minSponsorDuration: Int!
+  minSponsorAmount: BigInt!
+  marketData: String!
+  closed: Boolean!
+  closedAt: Int
+  createdAt: Int!
+  createdAtBlock: Int!
+}
+
+type Sponsorship {
+  id: ID!                              # txHash-logIndex
+  market: SponsoredMarket!
+  sponsor: String!
+  amount: BigInt!
+  startTime: Int!
+  endTime: Int!
+  ratePerMinute: BigInt!
+  withdrawn: Boolean!
+  returnedAmount: BigInt
+  consumedAmount: BigInt
+  isEarlyWithdraw: Boolean
+  timestamp: Int!
+  blockNumber: Int!
+}
+
+# ── Aggregate Stats ─────────────────────────────────────────────────
+
+type ExchangeStats {
+  id: ID!                              # exchange address
+  totalOrdersFilled: BigInt!
+  totalOrdersMatched: BigInt!
+  totalVolume: BigInt!
+  totalFees: BigInt!
+  totalBuilderFills: BigInt!           # fills with non-zero builder code
+}
+
+type PolyUSDStats {
+  id: ID!                              # "polyusd"
+  totalSupply: BigInt!
+  totalWrapped: BigInt!
+  totalUnwrapped: BigInt!
+  totalTransfers: BigInt!
+}

@@ -1,0 +1,113 @@
+import { CTFExchangeV2 } from "generated";
+
+const ZERO_BYTES32 = "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+const eventId = (event: { transaction: { hash: string }; logIndex: number }) =>
+  `${event.transaction.hash}-${event.logIndex}`;
+
+const getOrInitStats = async (context: any, id: string) =>
+  context.ExchangeStats.getOrCreate({
+    id,
+    totalOrdersFilled: 0n,
+    totalOrdersMatched: 0n,
+    totalVolume: 0n,
+    totalFees: 0n,
+    totalBuilderFills: 0n,
+  });
+
+// ── Trading ────────────────────────────────────────────────────────
+
+CTFExchangeV2.OrderFilled.handler(async ({ event, context }) => {
+  const stats = await getOrInitStats(context, event.srcAddress);
+
+  context.OrderFill.set({
+    id: eventId(event),
+    orderHash: event.params.orderHash,
+    maker: event.params.maker,
+    taker: event.params.taker,
+    side: Number(event.params.side),
+    tokenId: event.params.tokenId,
+    makerAmountFilled: event.params.makerAmountFilled,
+    takerAmountFilled: event.params.takerAmountFilled,
+    fee: event.params.fee,
+    builder: event.params.builder,
+    metadata: event.params.metadata,
+    exchange: event.srcAddress,
+    timestamp: event.block.timestamp,
+    blockNumber: event.block.number,
+    transactionHash: event.transaction.hash,
+    txFrom: event.transaction.from ?? "",
+  });
+
+  const hasBuilder = event.params.builder !== ZERO_BYTES32;
+
+  context.ExchangeStats.set({
+    ...stats,
+    totalOrdersFilled: stats.totalOrdersFilled + 1n,
+    totalVolume: stats.totalVolume + event.params.makerAmountFilled,
+    totalFees: stats.totalFees + event.params.fee,
+    totalBuilderFills: stats.totalBuilderFills + (hasBuilder ? 1n : 0n),
+  });
+});
+
+CTFExchangeV2.OrdersMatched.handler(async ({ event, context }) => {
+  const stats = await getOrInitStats(context, event.srcAddress);
+
+  context.OrderMatch.set({
+    id: eventId(event),
+    takerOrderHash: event.params.takerOrderHash,
+    takerOrderMaker: event.params.takerOrderMaker,
+    side: Number(event.params.side),
+    tokenId: event.params.tokenId,
+    makerAmountFilled: event.params.makerAmountFilled,
+    takerAmountFilled: event.params.takerAmountFilled,
+    exchange: event.srcAddress,
+    timestamp: event.block.timestamp,
+    blockNumber: event.block.number,
+    transactionHash: event.transaction.hash,
+  });
+
+  context.ExchangeStats.set({
+    ...stats,
+    totalOrdersMatched: stats.totalOrdersMatched + 1n,
+  });
+});
+
+CTFExchangeV2.FeeCharged.handler(async ({ event, context }) => {
+  context.FeeEvent.set({
+    id: eventId(event),
+    receiver: event.params.receiver,
+    amount: event.params.amount,
+    timestamp: event.block.timestamp,
+    blockNumber: event.block.number,
+    transactionHash: event.transaction.hash,
+  });
+});
+
+// ── Pause & Admin (light tracking) ─────────────────────────────────
+
+CTFExchangeV2.UserPaused.handler(async ({ event, context }) => {
+  context.log.info(
+    `User ${event.params.user} paused until block ${event.params.effectivePauseBlock}`
+  );
+});
+
+CTFExchangeV2.TradingPaused.handler(async ({ event, context }) => {
+  context.log.info(`Trading paused by ${event.params.pauser}`);
+});
+
+CTFExchangeV2.TradingUnpaused.handler(async ({ event, context }) => {
+  context.log.info(`Trading unpaused by ${event.params.pauser}`);
+});
+
+CTFExchangeV2.NewAdmin.handler(async ({ event, context }) => {
+  context.log.info(
+    `New admin ${event.params.newAdminAddress} added by ${event.params.admin}`
+  );
+});
+
+CTFExchangeV2.NewOperator.handler(async ({ event, context }) => {
+  context.log.info(
+    `New operator ${event.params.newOperatorAddress} added by ${event.params.admin}`
+  );
+});
