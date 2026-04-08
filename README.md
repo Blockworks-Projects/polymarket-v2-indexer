@@ -52,6 +52,3 @@ pnpm test
 - [pnpm](https://pnpm.io/installation)
 - [Docker](https://www.docker.com/products/docker-desktop/) or [Podman](https://podman.io/)
 
-## Reference
-
-Full contract addresses, event signatures, and HyperSync query examples in [`polymarket-v2-contracts.md`](../polymarket-v2-contracts.md).
