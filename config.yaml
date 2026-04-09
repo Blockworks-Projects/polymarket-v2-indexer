@@ -36,6 +36,41 @@ contracts:
       - event: "Withdrawn(bytes32 indexed marketId, address indexed sponsor, uint256 returnedAmount, uint256 consumedAmount, bool isEarlyWithdraw)"
       - event: "MarketClosed(bytes32 indexed marketId, uint32 closedAt)"
 
+  - name: DepositWalletFactory
+    abi_file_path: ./abis/DepositWalletFactory.json
+    events:
+      - event: "WalletDeployed(address indexed wallet, address indexed owner, bytes32 indexed id, address implementation)"
+
+  - name: CollateralOnramp
+    abi_file_path: ./abis/CollateralOnramp.json
+    events:
+      - event: "Paused(address indexed asset)"
+      - event: "Unpaused(address indexed asset)"
+
+  - name: CollateralOfframp
+    abi_file_path: ./abis/CollateralOfframp.json
+    events:
+      - event: "Paused(address indexed asset)"
+      - event: "Unpaused(address indexed asset)"
+
+  - name: PermissionedRamp
+    abi_file_path: ./abis/PermissionedRamp.json
+    events:
+      - event: "Paused(address indexed asset)"
+      - event: "Unpaused(address indexed asset)"
+      
+  - name: CTFCollateralAdapter
+    abi_file_path: ./abis/CTFCollateralAdapter.json
+    events:
+      - event: "Paused(address indexed asset)"
+      - event: "Unpaused(address indexed asset)"
+
+  - name: NegRiskCTFCollateralAdapter
+    abi_file_path: ./abis/NegRiskCTFCollateralAdapter.json
+    events:
+      - event: "Paused(address indexed asset)"
+      - event: "Unpaused(address indexed asset)"
+
 chains:
   - id: 137 # Polygon
     start_block: 84902320 # PolyUSD deployment
@@ -52,3 +87,16 @@ chains:
       # Rewards
       - name: Rewards
         address: 0xdd8db71ce3be8d71ff148b2163d64da181a29e8b
+      - name: DepositWalletFactory
+        address: "0x00000000000fb5c9adea0298d729a0cb3823cc07"
+      # Phase 6: Collateral Ramps
+      - name: CollateralOnramp
+        address: "0x93070a847efef7f70739046a929d47a521f5b8ee"
+      - name: CollateralOfframp
+        address: "0x2957922eb93258b93368531d39facca3b4dc5854"
+      - name: PermissionedRamp
+        address: "0xebc2459ec962869ca4c0bd1e06368272732bcb08"
+      - name: CTFCollateralAdapter
+        address: "0xada100874d00e3331d00f2007a9c336a65009718"
+      - name: NegRiskCTFCollateralAdapter
+        address: "0xada200001000ef00d07553cee7006808f895c6f1"

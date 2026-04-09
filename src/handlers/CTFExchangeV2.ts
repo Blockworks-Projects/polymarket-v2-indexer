@@ -68,7 +68,9 @@ CTFExchangeV2.OrderFilled.handler(async ({ event, context }) => {
     metadata: event.params.metadata,
     exchange: event.srcAddress,
     timestamp: event.block.timestamp,
-    blockNumber: event.block.number,
+    blockNumber: BigInt(event.block.number),
+    blockTimestamp: BigInt(event.block.timestamp),
+    logIndex: event.logIndex,
     transactionHash: event.transaction.hash,
     txFrom: event.transaction.from ?? "",
   });
@@ -99,7 +101,9 @@ CTFExchangeV2.OrdersMatched.handler(async ({ event, context }) => {
     takerAmountFilled: event.params.takerAmountFilled,
     exchange: event.srcAddress,
     timestamp: event.block.timestamp,
-    blockNumber: event.block.number,
+    blockNumber: BigInt(event.block.number),
+    blockTimestamp: BigInt(event.block.timestamp),
+    logIndex: event.logIndex,
     transactionHash: event.transaction.hash,
   });
 
@@ -115,7 +119,9 @@ CTFExchangeV2.FeeCharged.handler(async ({ event, context }) => {
     receiver: event.params.receiver,
     amount: event.params.amount,
     timestamp: event.block.timestamp,
-    blockNumber: event.block.number,
+    blockNumber: BigInt(event.block.number),
+    blockTimestamp: BigInt(event.block.timestamp),
+    logIndex: event.logIndex,
     transactionHash: event.transaction.hash,
   });
 });

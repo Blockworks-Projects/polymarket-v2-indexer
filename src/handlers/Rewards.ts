@@ -11,7 +11,9 @@ Rewards.DistributedRewards.handler(async ({ event, context }) => {
     user: event.params.user,
     amount: event.params.amount,
     timestamp: event.block.timestamp,
-    blockNumber: event.block.number,
+    blockNumber: BigInt(event.block.number),
+    blockTimestamp: BigInt(event.block.timestamp),
+    logIndex: event.logIndex,
     transactionHash: event.transaction.hash,
   });
 });
@@ -29,6 +31,10 @@ Rewards.MarketCreated.handler(async ({ event, context }) => {
     closedAt: undefined,
     createdAt: event.block.timestamp,
     createdAtBlock: event.block.number,
+    blockNumber: BigInt(event.block.number),
+    blockTimestamp: BigInt(event.block.timestamp),
+    logIndex: event.logIndex,
+    transactionHash: event.transaction.hash,
   });
 });
 
@@ -46,7 +52,10 @@ Rewards.Sponsored.handler(async ({ event, context }) => {
     consumedAmount: undefined,
     isEarlyWithdraw: undefined,
     timestamp: event.block.timestamp,
-    blockNumber: event.block.number,
+    blockNumber: BigInt(event.block.number),
+    blockTimestamp: BigInt(event.block.timestamp),
+    logIndex: event.logIndex,
+    transactionHash: event.transaction.hash,
   });
 });
 

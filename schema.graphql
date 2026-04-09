@@ -23,6 +23,10 @@ type Market {
 
 type OrderFill {
   id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   orderHash: String!
   maker: String!
   taker: String!
@@ -36,13 +40,15 @@ type OrderFill {
   metadata: String!                    # metadata (bytes32)
   exchange: String!                    # source exchange address
   timestamp: Int!
-  blockNumber: Int!
-  transactionHash: String!
   txFrom: String!                      # transaction sender
 }
 
 type OrderMatch {
   id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   takerOrderHash: String!
   takerOrderMaker: String!
   side: Int!                           # 0=BUY, 1=SELL
@@ -52,41 +58,45 @@ type OrderMatch {
   takerAmountFilled: BigInt!
   exchange: String!
   timestamp: Int!
-  blockNumber: Int!
-  transactionHash: String!
 }
 
 type FeeEvent {
   id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   receiver: String!
   amount: BigInt!
   timestamp: Int!
-  blockNumber: Int!
-  transactionHash: String!
 }
 
 # ── PolyUSD ─────────────────────────────────────────────────────────
 
 type PolyUSDTransfer {
   id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   from: String!
   to: String!
   amount: BigInt!
   timestamp: Int!
-  blockNumber: Int!
-  transactionHash: String!
 }
 
 type PolyUSDWrap {
   id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   eventType: String!                   # "wrap" | "unwrap"
   caller: String!
   asset: String!                       # underlying asset (USDC or USDC.e)
   to: String!
   amount: BigInt!
   timestamp: Int!
-  blockNumber: Int!
-  transactionHash: String!
 }
 
 type PolyUSDAccount {
@@ -100,15 +110,21 @@ type PolyUSDAccount {
 
 type RewardDistribution {
   id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   user: String!
   amount: BigInt!
   timestamp: Int!
-  blockNumber: Int!
-  transactionHash: String!
 }
 
 type SponsoredMarket {
   id: ID!                              # marketId (bytes32)
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   startTime: Int!
   minSponsorDuration: Int!
   minSponsorAmount: BigInt!
@@ -121,6 +137,10 @@ type SponsoredMarket {
 
 type Sponsorship {
   id: ID!                              # txHash-logIndex
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
   market: SponsoredMarket!
   sponsor: String!
   amount: BigInt!
@@ -132,7 +152,6 @@ type Sponsorship {
   consumedAmount: BigInt
   isEarlyWithdraw: Boolean
   timestamp: Int!
-  blockNumber: Int!
 }
 
 # ── Aggregate Stats ─────────────────────────────────────────────────
@@ -152,4 +171,41 @@ type PolyUSDStats {
   totalWrapped: BigInt!
   totalUnwrapped: BigInt!
   totalTransfers: BigInt!
+}
+
+type DepositWallet {
+  id: ID!
+  blockNumber: BigInt! @index
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
+  timestamp: BigInt! @index
+  wallet: String! @index
+  owner: String! @index
+  walletId: String! @index
+  implementation: String!
+}
+
+# ── Collateral Ramps ───────────────────────────────────────────────
+
+type CollateralRampPaused {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
+  timestamp: BigInt!
+  ramp: String!
+  asset: String!
+}
+
+type CollateralRampUnpaused {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  logIndex: Int!
+  transactionHash: String!
+  timestamp: BigInt!
+  ramp: String!
+  asset: String!
 }
